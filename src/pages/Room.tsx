@@ -1,14 +1,20 @@
+import { useParams } from 'react-router-dom';
 import logoImg from '../assets/images/logo.svg';
+
 import { Button } from '../components/Button';
+import { RoomCode } from '../components/RoomCode';
+
 import '../styles/room.scss';
 
 export function Room() {
+  const params = useParams<{ id: string }>();
+
   return (
     <div id="page-room">
       <header>
         <div className="content">
           <img src={logoImg} alt="LetMeAsk" />
-          <div>codigo</div>
+          <RoomCode code={params.id} />
         </div>
       </header>
 
@@ -22,11 +28,11 @@ export function Room() {
           <textarea placeholder="O que você quer perguntar?" />
 
           <div className="form-footer">
-            <span>Para enviar uma pergunta, <button>faça seu login</button>,</span>
+            <span>Para enviar uma pergunta, <button>faça seu login</button>.</span>
             <Button>Enviar pergunta</Button>
           </div>
         </form>
       </main>
-    </div>
+    </div >
   );
 }
