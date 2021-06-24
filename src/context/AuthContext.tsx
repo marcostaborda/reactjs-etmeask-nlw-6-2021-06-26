@@ -20,6 +20,7 @@ export const AuthContext = createContext({} as AuthContextType);
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserProps>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
@@ -34,6 +35,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
           name: displayName,
           avatar: photoURL
         })
+
+        setLoading(false);
       }
     })
 
@@ -60,6 +63,9 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       })
     }
   }
+
+  if (loading)
+    return (<span>Carregando...</span>);
 
   return (
     <AuthContext.Provider value={{ user, signInWithGoogle }}>
