@@ -2,7 +2,7 @@
 
 ![SignUp Mobile](images/print.png)
 
-Este projeto foi criado juntamente com a semana NLW 6, foi utilizado o real database do firebase para controlar as salas, e fazer a sistemática de perguntas e respostas.
+Este projeto foi criado juntamente com a semana NLW 6, foi utilizado o real database do firebase para controlar as salas, e fazer a um local onde ficam as perguntas quando o usuário administrador está em uma Live.
 
 ## Requisitos
 
