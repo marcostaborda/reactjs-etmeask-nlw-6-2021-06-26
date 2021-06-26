@@ -1,17 +1,19 @@
 import { useEffect } from 'react';
 import { FormEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
+
 import logoImg from '../assets/images/logo.svg';
 
-import { Button } from '../components/Button';
-import { Question } from '../components/Question';
-import { RoomCode } from '../components/RoomCode';
 import { useAuth } from '../hooks/useAuth';
 import { useRoom } from '../hooks/useRoom';
 import { database } from '../services/firebase';
 
+import { Button } from '../components/Button';
+import { Question } from '../components/Question';
+import { RoomCode } from '../components/RoomCode';
+
 import '../styles/room.scss';
-export function Room() {
+export function AdminRoom() {
   const { user } = useAuth();
   const { roomId } = useParams<{ roomId: string }>();
   const { questions, title } = useRoom(roomId);
@@ -59,28 +61,6 @@ export function Room() {
             <span>{questions.length} pergunta(s)</span>
           )}
         </div>
-
-        <form onSubmit={handleSendQuestion}>
-          <textarea
-            placeholder="O que você quer perguntar?"
-            value={newQuestion}
-            onChange={event => setNewQuestion(event.target.value)}
-          />
-
-          <div className="form-footer">
-            {user ?
-              (
-                <div className="user-info">
-                  <img src={user.avatar} alt={user.name} />
-                  <span>{user.name}</span>
-                </div>
-              ) :
-              (
-                <span>Para enviar uma pergunta, <button>faça seu login</button>.</span>
-              )}
-            <Button disabled={!user}>Enviar pergunta</Button>
-          </div>
-        </form>
 
         <div className="question-list">
           {questions.map(question => (
