@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
 import { FormEvent, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import logoImg from '../assets/images/logo.svg';
+import deleteImg from '../assets/images/delete.svg';
 
 import { useAuth } from '../hooks/useAuth';
 import { useRoom } from '../hooks/useRoom';
@@ -14,35 +14,22 @@ import { RoomCode } from '../components/RoomCode';
 
 import '../styles/room.scss';
 export function AdminRoom() {
-  const { user } = useAuth();
   const { roomId } = useParams<{ roomId: string }>();
   const { questions, title } = useRoom(roomId);
+  const history = useHistory();
 
-  const [newQuestion, setNewQuestion] = useState('');
+  async function handleEndRoom() {
+    await database.ref(`rooms/${roomId}`).update({
+      endedAt: new Date()
+    });
 
-  async function handleSendQuestion(event: FormEvent) {
-    event.preventDefault();
+    history.push('/');
+  }
 
-    if (newQuestion.trim() === '') {
-      return;
+  async function handleDeleteQuestion(questionId: string) {
+    if (window.confirm('Tem certeza que deseja excluir essa pergunta?')) {
+      await database.ref(`rooms/${roomId}/questions/${questionId}`).remove();
     }
-
-    if (!user)
-      return;
-
-    const question = {
-      content: newQuestion,
-      author: {
-        name: user?.name,
-        avatar: user?.avatar
-      },
-      isHighlighted: false,
-      isAnswered: false
-    };
-
-    await database.ref(`rooms/${roomId}/questions`).push(question);
-
-    setNewQuestion('');
   }
 
   return (
@@ -50,7 +37,10 @@ export function AdminRoom() {
       <header>
         <div className="content">
           <img src={logoImg} alt="LetMeAsk" />
-          <RoomCode code={roomId} />
+          <div>
+            <RoomCode code={roomId} />
+            <Button isOutlined onClick={handleEndRoom}>Encerrar a sela</Button>
+          </div>
         </div>
       </header>
 
@@ -64,7 +54,14 @@ export function AdminRoom() {
 
         <div className="question-list">
           {questions.map(question => (
-            <Question content={question.content} author={question.author} key={question.id} />
+            <Question content={question.content} author={question.author} key={question.id}>
+              <button
+                type="button"
+                onClick={() => handleDeleteQuestion(question.id)}
+              >
+                <img src={deleteImg} alt="Remover pergunta" />
+              </button>
+            </Question>
           ))}
         </div>
       </main>
